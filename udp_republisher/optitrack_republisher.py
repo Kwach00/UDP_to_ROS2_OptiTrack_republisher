@@ -32,10 +32,13 @@ class MinimalPublisher(Node):
         self.RigidBody = 'CF'
         self.IP = "192.168.110.2"
         self.Port = 12111
+        self.publish_string_msg = False
         
-        # self.pub_optitrack_string = self.create_publisher(String, 'optitrack_topic_string', 10)
+        if self.publish_string_msg:
+            self.pub_optitrack_string = self.create_publisher(String, 'optitrack_topic_string', 10)
+        
         self.pub_optitrack = self.create_publisher(Pose, 'optitrack_topic', 10)
-        self.timer_period = 0.004  # 250Hz
+        self.timer_period = 1.0 / 250.0  # 250Hzs
         self.timer = self.create_timer(self.timer_period, self.timer_callback)
         
         self.serverAddressPort = (self.IP, self.Port)
@@ -48,12 +51,14 @@ class MinimalPublisher(Node):
 
     def timer_callback(self):
         msg_pose = Pose()
-        # msgFromServer = String()
+        if self.publish_string_msg:
+            msgFromServer = String()
         recv_data = self.UDPClientSocket.recvfrom(self.bufferSize)
         json_obj = json.loads(recv_data[0])
         if 'rigid_bodies' in json_obj:
-            # msgFromServer.data = json.dumps(json_obj)
-            # self.pub_optitrack_string.publish(msgFromServer)
+            if self.publish_string_msg:
+                msgFromServer.data = json.dumps(json_obj)
+                self.pub_optitrack_string.publish(msgFromServer)
             
             if json_obj[self.RigidBody][0] == 1:
                 self.last_json_obj = json_obj
