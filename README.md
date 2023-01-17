@@ -8,7 +8,7 @@ Node compatible with ROS2 Foxy.
 
 ### Using Docker
 
-While using docker it is necessary to use settings `--network host` with `docker run` command. Unless you are using any custom bridging between docker and host network.
+While using docker it is necessary to use settings `--network host` with `docker build` command. Unless you are using any custom bridging between docker and host network.
 
 ## Running the node
 
